@@ -104,3 +104,71 @@ Content-Type: application/json
 DELETE {{MiniMES.Api_HostAddress}}/api/processes/1
 
 ###
+
+GET {{MiniMES.Api_HostAddress}}/api/equipments
+Accept: application/json
+
+###
+
+GET {{MiniMES.Api_HostAddress}}/api/equipments?status=Running
+Accept: application/json
+
+###
+
+GET {{MiniMES.Api_HostAddress}}/api/equipments/1
+Accept: application/json
+
+###
+
+POST {{MiniMES.Api_HostAddress}}/api/equipments
+Content-Type: application/json
+
+{
+  "equipmentCode": "CUT-01",
+  "equipmentName": "Cutting Machine 01",
+  "processId": 1,
+  "status": "Idle",
+  "location": "Line A",
+  "description": "Main cutting machine"
+}
+
+###
+
+POST {{MiniMES.Api_HostAddress}}/api/equipments
+Content-Type: application/json
+
+{
+  "equipmentCode": "INSP-01",
+  "equipmentName": "Inspection Station 01",
+  "processId": 2,
+  "status": "Idle",
+  "location": "QA Room",
+  "description": "Final inspection station"
+}
+
+###
+
+PATCH {{MiniMES.Api_HostAddress}}/api/equipments/1/status
+Content-Type: application/json
+
+"Running"
+
+###
+
+PUT {{MiniMES.Api_HostAddress}}/api/equipments/1
+Content-Type: application/json
+
+{
+  "equipmentName": "Cutting Machine 01 Updated",
+  "processId": 1,
+  "status": "Maintenance",
+  "location": "Line A",
+  "description": "Updated cutting machine",
+  "isActive": true
+}
+
+###
+
+DELETE {{MiniMES.Api_HostAddress}}/api/equipments/1
+
+###

@@ -9,6 +9,8 @@ public class MiniMesDbContext(DbContextOptions<MiniMesDbContext> options) : DbCo
 
     public DbSet<ManufacturingProcess> Processes => Set<ManufacturingProcess>();
 
+    public DbSet<Equipment> Equipments => Set<Equipment>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Item>(entity =>
@@ -55,6 +57,37 @@ public class MiniMesDbContext(DbContextOptions<MiniMesDbContext> options) : DbCo
 
             entity.Property(process => process.Description)
                 .HasMaxLength(300);
+        });
+
+        modelBuilder.Entity<Equipment>(entity =>
+        {
+            entity.HasKey(equipment => equipment.Id);
+
+            entity.HasIndex(equipment => equipment.EquipmentCode)
+                .IsUnique();
+
+            entity.Property(equipment => equipment.EquipmentCode)
+                .HasMaxLength(50)
+                .IsRequired();
+
+            entity.Property(equipment => equipment.EquipmentName)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            entity.Property(equipment => equipment.Status)
+                .HasMaxLength(30)
+                .IsRequired();
+
+            entity.Property(equipment => equipment.Location)
+                .HasMaxLength(100);
+
+            entity.Property(equipment => equipment.Description)
+                .HasMaxLength(300);
+
+            entity.HasOne(equipment => equipment.Process)
+                .WithMany()
+                .HasForeignKey(equipment => equipment.ProcessId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }
