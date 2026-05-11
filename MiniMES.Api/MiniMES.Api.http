@@ -1,6 +1,48 @@
 @MiniMES.Api_HostAddress = http://localhost:5062
 
-GET {{MiniMES.Api_HostAddress}}/weatherforecast/
+GET {{MiniMES.Api_HostAddress}}/api/items
 Accept: application/json
+
+###
+
+GET {{MiniMES.Api_HostAddress}}/api/items?search=ITEM
+Accept: application/json
+
+###
+
+GET {{MiniMES.Api_HostAddress}}/api/items/1
+Accept: application/json
+
+###
+
+POST {{MiniMES.Api_HostAddress}}/api/items
+Content-Type: application/json
+
+{
+  "itemCode": "ITEM-002",
+  "itemName": "Bracket A",
+  "specification": "100x50",
+  "unit": "EA",
+  "itemType": "Product",
+  "safetyStock": 20
+}
+
+###
+
+PUT {{MiniMES.Api_HostAddress}}/api/items/1
+Content-Type: application/json
+
+{
+  "itemName": "Test Item regenereated",
+  "specification": "Sample",
+  "unit": "EA",
+  "itemType": "Product",
+  "safetyStock": 15,
+  "isActive": true
+}
+
+###
+
+DELETE {{MiniMES.Api_HostAddress}}/api/items/1
 
 ###
