@@ -18,7 +18,7 @@ if (app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<MiniMesDbContext>();
-    dbContext.Database.EnsureCreated();
+    await DatabaseInitializer.EnsureCreatedAsync(dbContext);
 }
 
 app.UseHttpsRedirection();

@@ -7,6 +7,8 @@ public class MiniMesDbContext(DbContextOptions<MiniMesDbContext> options) : DbCo
 {
     public DbSet<Item> Items => Set<Item>();
 
+    public DbSet<ManufacturingProcess> Processes => Set<ManufacturingProcess>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Item>(entity =>
@@ -34,6 +36,25 @@ public class MiniMesDbContext(DbContextOptions<MiniMesDbContext> options) : DbCo
             entity.Property(item => item.ItemType)
                 .HasMaxLength(30)
                 .IsRequired();
+        });
+
+        modelBuilder.Entity<ManufacturingProcess>(entity =>
+        {
+            entity.HasKey(process => process.Id);
+
+            entity.HasIndex(process => process.ProcessCode)
+                .IsUnique();
+
+            entity.Property(process => process.ProcessCode)
+                .HasMaxLength(50)
+                .IsRequired();
+
+            entity.Property(process => process.ProcessName)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            entity.Property(process => process.Description)
+                .HasMaxLength(300);
         });
     }
 }

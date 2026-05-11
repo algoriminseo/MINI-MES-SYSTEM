@@ -46,3 +46,61 @@ Content-Type: application/json
 DELETE {{MiniMES.Api_HostAddress}}/api/items/1
 
 ###
+
+GET {{MiniMES.Api_HostAddress}}/api/processes
+Accept: application/json
+
+###
+
+GET {{MiniMES.Api_HostAddress}}/api/processes?search=CUT
+Accept: application/json
+
+###
+
+GET {{MiniMES.Api_HostAddress}}/api/processes/1
+Accept: application/json
+
+###
+
+POST {{MiniMES.Api_HostAddress}}/api/processes
+Content-Type: application/json
+
+{
+  "processCode": "CUT",
+  "processName": "Cutting",
+  "description": "Raw material cutting process",
+  "sortOrder": 10,
+  "isInspection": false
+}
+
+###
+
+POST {{MiniMES.Api_HostAddress}}/api/processes
+Content-Type: application/json
+
+{
+  "processCode": "INSP",
+  "processName": "Inspection",
+  "description": "Final quality inspection",
+  "sortOrder": 90,
+  "isInspection": true
+}
+
+###
+
+PUT {{MiniMES.Api_HostAddress}}/api/processes/1
+Content-Type: application/json
+
+{
+  "processName": "Cutting Updated",
+  "description": "Updated cutting process",
+  "sortOrder": 10,
+  "isInspection": false,
+  "isActive": true
+}
+
+###
+
+DELETE {{MiniMES.Api_HostAddress}}/api/processes/1
+
+###
