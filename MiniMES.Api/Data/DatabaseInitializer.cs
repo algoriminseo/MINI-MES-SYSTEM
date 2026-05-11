@@ -10,6 +10,7 @@ public static class DatabaseInitializer
         await EnsureProcessesTableAsync(dbContext);
         await EnsureEquipmentsTableAsync(dbContext);
         await EnsureWorkersTableAsync(dbContext);
+        await EnsureWorkOrdersTableAsync(dbContext);
     }
 
     private static async Task EnsureProcessesTableAsync(MiniMesDbContext dbContext)
@@ -83,6 +84,40 @@ public static class DatabaseInitializer
 
                 CREATE UNIQUE INDEX [IX_Workers_WorkerCode]
                     ON [dbo].[Workers] ([WorkerCode]);
+            END
+            """);
+    }
+
+    private static async Task EnsureWorkOrdersTableAsync(MiniMesDbContext dbContext)
+    {
+        await dbContext.Database.ExecuteSqlRawAsync("""
+            IF OBJECT_ID(N'[dbo].[WorkOrders]', N'U') IS NULL
+            BEGIN
+                CREATE TABLE [dbo].[WorkOrders] (
+                    [Id] INT IDENTITY(1,1) NOT NULL CONSTRAINT [PK_WorkOrders] PRIMARY KEY,
+                    [WorkOrderNo] NVARCHAR(50) NOT NULL,
+                    [ItemId] INT NOT NULL,
+                    [OrderQuantity] INT NOT NULL,
+                    [ProducedQuantity] INT NOT NULL,
+                    [DefectQuantity] INT NOT NULL,
+                    [Status] NVARCHAR(30) NOT NULL,
+                    [PlannedStartDate] DATETIME2 NULL,
+                    [DueDate] DATETIME2 NULL,
+                    [StartedAt] DATETIME2 NULL,
+                    [CompletedAt] DATETIME2 NULL,
+                    [Remark] NVARCHAR(500) NULL,
+                    [IsActive] BIT NOT NULL,
+                    [CreatedAt] DATETIME2 NOT NULL,
+                    [UpdatedAt] DATETIME2 NULL,
+                    CONSTRAINT [FK_WorkOrders_Items_ItemId]
+                        FOREIGN KEY ([ItemId]) REFERENCES [dbo].[Items] ([Id])
+                );
+
+                CREATE UNIQUE INDEX [IX_WorkOrders_WorkOrderNo]
+                    ON [dbo].[WorkOrders] ([WorkOrderNo]);
+
+                CREATE INDEX [IX_WorkOrders_ItemId]
+                    ON [dbo].[WorkOrders] ([ItemId]);
             END
             """);
     }

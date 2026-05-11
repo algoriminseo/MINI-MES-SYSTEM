@@ -13,6 +13,8 @@ public class MiniMesDbContext(DbContextOptions<MiniMesDbContext> options) : DbCo
 
     public DbSet<Worker> Workers => Set<Worker>();
 
+    public DbSet<WorkOrder> WorkOrders => Set<WorkOrder>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Item>(entity =>
@@ -115,6 +117,30 @@ public class MiniMesDbContext(DbContextOptions<MiniMesDbContext> options) : DbCo
 
             entity.Property(worker => worker.ShiftGroup)
                 .HasMaxLength(30);
+        });
+
+        modelBuilder.Entity<WorkOrder>(entity =>
+        {
+            entity.HasKey(workOrder => workOrder.Id);
+
+            entity.HasIndex(workOrder => workOrder.WorkOrderNo)
+                .IsUnique();
+
+            entity.Property(workOrder => workOrder.WorkOrderNo)
+                .HasMaxLength(50)
+                .IsRequired();
+
+            entity.Property(workOrder => workOrder.Status)
+                .HasMaxLength(30)
+                .IsRequired();
+
+            entity.Property(workOrder => workOrder.Remark)
+                .HasMaxLength(500);
+
+            entity.HasOne(workOrder => workOrder.Item)
+                .WithMany()
+                .HasForeignKey(workOrder => workOrder.ItemId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

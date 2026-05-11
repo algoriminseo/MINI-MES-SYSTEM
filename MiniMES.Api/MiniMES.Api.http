@@ -3,12 +3,13 @@
 @processId = 1
 @equipmentId = 1
 @workerId = 1
+@workOrderId = 1
 
-### 00. API OpenAPI document
+### 00. API check
 GET {{Host}}/openapi/v1.json
 Accept: application/json
 
-### 01-01. Items - create product
+### 01. Create item
 POST {{Host}}/api/items
 Content-Type: application/json
 
@@ -21,78 +22,7 @@ Content-Type: application/json
   "safetyStock": 20
 }
 
-### 01-02. Items - create material
-POST {{Host}}/api/items
-Content-Type: application/json
-
-{
-  "itemCode": "MAT-100",
-  "itemName": "Steel Plate",
-  "specification": "SPCC 2T",
-  "unit": "KG",
-  "itemType": "Material",
-  "safetyStock": 100
-}
-
-### 01-03. Items - list active
-GET {{Host}}/api/items
-Accept: application/json
-
-### 01-04. Items - search by code or name
-GET {{Host}}/api/items?search=ITEM
-Accept: application/json
-
-### 01-05. Items - get by id
-GET {{Host}}/api/items/{{itemId}}
-Accept: application/json
-
-### 01-06. Items - duplicate code should return 409
-POST {{Host}}/api/items
-Content-Type: application/json
-
-{
-  "itemCode": "ITEM-100",
-  "itemName": "Duplicate Bracket",
-  "specification": "Duplicate",
-  "unit": "EA",
-  "itemType": "Product",
-  "safetyStock": 0
-}
-
-### 01-07. Items - missing required values should return 400
-POST {{Host}}/api/items
-Content-Type: application/json
-
-{
-  "itemCode": "",
-  "itemName": "",
-  "specification": "Invalid",
-  "unit": "EA",
-  "itemType": "Product",
-  "safetyStock": 0
-}
-
-### 01-08. Items - update
-PUT {{Host}}/api/items/{{itemId}}
-Content-Type: application/json
-
-{
-  "itemName": "Bracket A Updated",
-  "specification": "100x50 Rev.B",
-  "unit": "EA",
-  "itemType": "Product",
-  "safetyStock": 30,
-  "isActive": true
-}
-
-### 01-09. Items - deactivate
-DELETE {{Host}}/api/items/{{itemId}}
-
-### 01-10. Items - list including inactive
-GET {{Host}}/api/items?includeInactive=true
-Accept: application/json
-
-### 02-01. Processes - create cutting process
+### 02. Create process
 POST {{Host}}/api/processes
 Content-Type: application/json
 
@@ -104,181 +34,20 @@ Content-Type: application/json
   "isInspection": false
 }
 
-### 02-02. Processes - create inspection process
-POST {{Host}}/api/processes
-Content-Type: application/json
-
-{
-  "processCode": "INSP",
-  "processName": "Inspection",
-  "description": "Final quality inspection",
-  "sortOrder": 90,
-  "isInspection": true
-}
-
-### 02-03. Processes - list active
-GET {{Host}}/api/processes
-Accept: application/json
-
-### 02-04. Processes - search by code or name
-GET {{Host}}/api/processes?search=CUT
-Accept: application/json
-
-### 02-05. Processes - get by id
-GET {{Host}}/api/processes/{{processId}}
-Accept: application/json
-
-### 02-06. Processes - duplicate code should return 409
-POST {{Host}}/api/processes
-Content-Type: application/json
-
-{
-  "processCode": "CUT",
-  "processName": "Duplicate Cutting",
-  "description": "Duplicate",
-  "sortOrder": 20,
-  "isInspection": false
-}
-
-### 02-07. Processes - missing required values should return 400
-POST {{Host}}/api/processes
-Content-Type: application/json
-
-{
-  "processCode": "",
-  "processName": "",
-  "description": "Invalid",
-  "sortOrder": 30,
-  "isInspection": false
-}
-
-### 02-08. Processes - update
-PUT {{Host}}/api/processes/{{processId}}
-Content-Type: application/json
-
-{
-  "processName": "Cutting Updated",
-  "description": "Updated cutting process",
-  "sortOrder": 10,
-  "isInspection": false,
-  "isActive": true
-}
-
-### 02-09. Processes - deactivate
-DELETE {{Host}}/api/processes/{{processId}}
-
-### 02-10. Processes - list including inactive
-GET {{Host}}/api/processes?includeInactive=true
-Accept: application/json
-
-### 03-01. Equipments - create cutting equipment
+### 03. Create equipment
 POST {{Host}}/api/equipments
 Content-Type: application/json
 
 {
   "equipmentCode": "CUT-01",
   "equipmentName": "Cutting Machine 01",
-  "processId": 1,
+  "processId": {{processId}},
   "status": "Idle",
   "location": "Line A",
   "description": "Main cutting machine"
 }
 
-### 03-02. Equipments - create inspection equipment
-POST {{Host}}/api/equipments
-Content-Type: application/json
-
-{
-  "equipmentCode": "INSP-01",
-  "equipmentName": "Inspection Station 01",
-  "processId": 2,
-  "status": "Idle",
-  "location": "QA Room",
-  "description": "Final inspection station"
-}
-
-### 03-03. Equipments - list active
-GET {{Host}}/api/equipments
-Accept: application/json
-
-### 03-04. Equipments - filter by status
-GET {{Host}}/api/equipments?status=Idle
-Accept: application/json
-
-### 03-05. Equipments - filter by process
-GET {{Host}}/api/equipments?processId=1
-Accept: application/json
-
-### 03-06. Equipments - get by id
-GET {{Host}}/api/equipments/{{equipmentId}}
-Accept: application/json
-
-### 03-07. Equipments - duplicate code should return 409
-POST {{Host}}/api/equipments
-Content-Type: application/json
-
-{
-  "equipmentCode": "CUT-01",
-  "equipmentName": "Duplicate Cutting Machine",
-  "processId": 1,
-  "status": "Idle",
-  "location": "Line A",
-  "description": "Duplicate"
-}
-
-### 03-08. Equipments - invalid process should return 400
-POST {{Host}}/api/equipments
-Content-Type: application/json
-
-{
-  "equipmentCode": "BAD-01",
-  "equipmentName": "Invalid Process Equipment",
-  "processId": 999999,
-  "status": "Idle",
-  "location": "Line X",
-  "description": "Invalid process id"
-}
-
-### 03-09. Equipments - invalid status should return 400
-POST {{Host}}/api/equipments
-Content-Type: application/json
-
-{
-  "equipmentCode": "BAD-02",
-  "equipmentName": "Invalid Status Equipment",
-  "processId": 1,
-  "status": "Broken",
-  "location": "Line X",
-  "description": "Invalid status"
-}
-
-### 03-10. Equipments - update status only
-PATCH {{Host}}/api/equipments/{{equipmentId}}/status
-Content-Type: application/json
-
-"Running"
-
-### 03-11. Equipments - update
-PUT {{Host}}/api/equipments/{{equipmentId}}
-Content-Type: application/json
-
-{
-  "equipmentName": "Cutting Machine 01 Updated",
-  "processId": 1,
-  "status": "Maintenance",
-  "location": "Line A",
-  "description": "Updated cutting machine",
-  "isActive": true
-}
-
-### 03-12. Equipments - deactivate
-DELETE {{Host}}/api/equipments/{{equipmentId}}
-
-### 03-13. Equipments - list including inactive
-GET {{Host}}/api/equipments?includeInactive=true
-Accept: application/json
-
-### 04-01. Workers - create production worker
+### 04. Create worker
 POST {{Host}}/api/workers
 Content-Type: application/json
 
@@ -290,73 +59,101 @@ Content-Type: application/json
   "shiftGroup": "A"
 }
 
-### 04-02. Workers - create quality worker
-POST {{Host}}/api/workers
-Content-Type: application/json
+### 05. Check all master data
+GET {{Host}}/api/items
+Accept: application/json
 
-{
-  "workerCode": "WK-002",
-  "workerName": "Lee Hana",
-  "department": "Quality",
-  "role": "Inspector",
-  "shiftGroup": "B"
-}
+### 06. Check processes
+GET {{Host}}/api/processes
+Accept: application/json
 
-### 04-03. Workers - list active
+### 07. Check equipments
+GET {{Host}}/api/equipments
+Accept: application/json
+
+### 08. Check workers
 GET {{Host}}/api/workers
 Accept: application/json
 
-### 04-04. Workers - search by code or name
-GET {{Host}}/api/workers?search=WK
-Accept: application/json
-
-### 04-05. Workers - filter by department and shift
-GET {{Host}}/api/workers?department=Production&shiftGroup=A
-Accept: application/json
-
-### 04-06. Workers - get by id
-GET {{Host}}/api/workers/{{workerId}}
-Accept: application/json
-
-### 04-07. Workers - duplicate code should return 409
-POST {{Host}}/api/workers
+### 09. Create work order
+POST {{Host}}/api/workorders
 Content-Type: application/json
 
 {
-  "workerCode": "WK-001",
-  "workerName": "Duplicate Worker",
-  "department": "Production",
-  "role": "Operator",
-  "shiftGroup": "A"
+  "workOrderNo": "WO-TEST-001",
+  "itemId": {{itemId}},
+  "orderQuantity": 100,
+  "plannedStartDate": "2026-05-12T09:00:00",
+  "dueDate": "2026-05-15T18:00:00",
+  "remark": "First work order test"
 }
 
-### 04-08. Workers - missing required values should return 400
-POST {{Host}}/api/workers
-Content-Type: application/json
-
-{
-  "workerCode": "",
-  "workerName": "",
-  "department": "Production",
-  "role": "Operator",
-  "shiftGroup": "A"
-}
-
-### 04-09. Workers - update
-PUT {{Host}}/api/workers/{{workerId}}
-Content-Type: application/json
-
-{
-  "workerName": "Kim Minsoo Updated",
-  "department": "Production",
-  "role": "Line Leader",
-  "shiftGroup": "A",
-  "isActive": true
-}
-
-### 04-10. Workers - deactivate
-DELETE {{Host}}/api/workers/{{workerId}}
-
-### 04-11. Workers - list including inactive
-GET {{Host}}/api/workers?includeInactive=true
+### 10. List work orders
+GET {{Host}}/api/workorders
 Accept: application/json
+
+### 11. Get work order detail
+GET {{Host}}/api/workorders/{{workOrderId}}
+Accept: application/json
+
+### 12. Release work order: Planned -> Released
+PATCH {{Host}}/api/workorders/{{workOrderId}}/release
+
+### 13. Start work order: Released -> InProgress
+PATCH {{Host}}/api/workorders/{{workOrderId}}/start
+
+### 14. Pause work order: InProgress -> Paused
+PATCH {{Host}}/api/workorders/{{workOrderId}}/pause
+
+### 15. Restart work order: Paused -> InProgress
+PATCH {{Host}}/api/workorders/{{workOrderId}}/start
+
+### 16. Complete work order: InProgress -> Completed
+PATCH {{Host}}/api/workorders/{{workOrderId}}/complete
+
+### 17. Check completed work order
+GET {{Host}}/api/workorders/{{workOrderId}}
+Accept: application/json
+
+### 18. Filter work orders by status
+GET {{Host}}/api/workorders?status=Completed
+Accept: application/json
+
+### 19. Equipment status board sample
+PATCH {{Host}}/api/equipments/{{equipmentId}}/status
+Content-Type: application/json
+
+"Running"
+
+### 20. Check running equipments
+GET {{Host}}/api/equipments?status=Running
+Accept: application/json
+
+### 90. Error sample - duplicate item should return 409
+POST {{Host}}/api/items
+Content-Type: application/json
+
+{
+  "itemCode": "ITEM-100",
+  "itemName": "Duplicate Bracket A",
+  "specification": "100x50",
+  "unit": "EA",
+  "itemType": "Product",
+  "safetyStock": 20
+}
+
+### 91. Error sample - invalid work order item should return 400
+POST {{Host}}/api/workorders
+Content-Type: application/json
+
+{
+  "workOrderNo": "WO-BAD-ITEM",
+  "itemId": 999999,
+  "orderQuantity": 100,
+  "plannedStartDate": "2026-05-12T09:00:00",
+  "dueDate": "2026-05-15T18:00:00",
+  "remark": "Invalid item test"
+}
+
+### 92. Error sample - invalid status transition should return 400
+PATCH {{Host}}/api/workorders/{{workOrderId}}/release
