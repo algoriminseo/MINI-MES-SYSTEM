@@ -9,6 +9,7 @@ public static class DatabaseInitializer
         await dbContext.Database.EnsureCreatedAsync();
         await EnsureProcessesTableAsync(dbContext);
         await EnsureEquipmentsTableAsync(dbContext);
+        await EnsureWorkersTableAsync(dbContext);
     }
 
     private static async Task EnsureProcessesTableAsync(MiniMesDbContext dbContext)
@@ -59,6 +60,29 @@ public static class DatabaseInitializer
 
                 CREATE INDEX [IX_Equipments_ProcessId]
                     ON [dbo].[Equipments] ([ProcessId]);
+            END
+            """);
+    }
+
+    private static async Task EnsureWorkersTableAsync(MiniMesDbContext dbContext)
+    {
+        await dbContext.Database.ExecuteSqlRawAsync("""
+            IF OBJECT_ID(N'[dbo].[Workers]', N'U') IS NULL
+            BEGIN
+                CREATE TABLE [dbo].[Workers] (
+                    [Id] INT IDENTITY(1,1) NOT NULL CONSTRAINT [PK_Workers] PRIMARY KEY,
+                    [WorkerCode] NVARCHAR(50) NOT NULL,
+                    [WorkerName] NVARCHAR(100) NOT NULL,
+                    [Department] NVARCHAR(100) NULL,
+                    [Role] NVARCHAR(50) NULL,
+                    [ShiftGroup] NVARCHAR(30) NULL,
+                    [IsActive] BIT NOT NULL,
+                    [CreatedAt] DATETIME2 NOT NULL,
+                    [UpdatedAt] DATETIME2 NULL
+                );
+
+                CREATE UNIQUE INDEX [IX_Workers_WorkerCode]
+                    ON [dbo].[Workers] ([WorkerCode]);
             END
             """);
     }

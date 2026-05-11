@@ -11,6 +11,8 @@ public class MiniMesDbContext(DbContextOptions<MiniMesDbContext> options) : DbCo
 
     public DbSet<Equipment> Equipments => Set<Equipment>();
 
+    public DbSet<Worker> Workers => Set<Worker>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Item>(entity =>
@@ -88,6 +90,31 @@ public class MiniMesDbContext(DbContextOptions<MiniMesDbContext> options) : DbCo
                 .WithMany()
                 .HasForeignKey(equipment => equipment.ProcessId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<Worker>(entity =>
+        {
+            entity.HasKey(worker => worker.Id);
+
+            entity.HasIndex(worker => worker.WorkerCode)
+                .IsUnique();
+
+            entity.Property(worker => worker.WorkerCode)
+                .HasMaxLength(50)
+                .IsRequired();
+
+            entity.Property(worker => worker.WorkerName)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            entity.Property(worker => worker.Department)
+                .HasMaxLength(100);
+
+            entity.Property(worker => worker.Role)
+                .HasMaxLength(50);
+
+            entity.Property(worker => worker.ShiftGroup)
+                .HasMaxLength(30);
         });
     }
 }
